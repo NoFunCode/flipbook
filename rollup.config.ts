@@ -4,8 +4,9 @@ import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import postcss from "rollup-plugin-postcss";
+import { readFileSync } from "fs";
 
-import pkg from "./package.json" with { type: "json" };
+const pkg = JSON.parse(readFileSync("./package.json", "utf-8"));
 
 const config: RollupOptions = {
   input: "src/index.ts",
@@ -43,10 +44,10 @@ const config: RollupOptions = {
       extract: true,
       minimize: true,
     }),
-    typescript({ 
+    typescript({
       tsconfig: "./tsconfig.json",
       declaration: true,
-      declarationDir: "./lib"
+      declarationDir: "./lib",
     }),
     json(),
   ],

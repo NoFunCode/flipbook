@@ -22,7 +22,8 @@
     "build:lib": "rollup -c --configPlugin typescript --sourcemap",
     "test": "vitest --watch=false",
     "test:watch": "vitest",
-    "prepare": "husky"
+    "prepare": "husky",
+    "demo": "vite demo"
   },
   "files": [
     "lib"
@@ -82,10 +83,10 @@
   },
   "dependencies": {
     "@types/page-flip": "^2.0.4",
-    "page-flip": "^2.0.7",
     "pdfjs-dist": "^5.4.530",
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0",
+    "react-pageflip": "^2.0.3",
     "react-pdf": "^10.3.0"
   }
 }
