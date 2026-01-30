@@ -1,7 +1,9 @@
 import type { RollupOptions } from "rollup";
 import typescript from "@rollup/plugin-typescript";
 import resolve from "@rollup/plugin-node-resolve";
+import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
+import postcss from "rollup-plugin-postcss";
 
 import pkg from "./package.json" with { type: "json" };
 
@@ -11,23 +13,41 @@ const config: RollupOptions = {
     {
       file: pkg.main,
       format: "cjs",
+      sourcemap: true,
     },
     {
       file: pkg.module,
       format: "esm",
+      sourcemap: true,
     },
     {
       file: pkg.browser,
       format: "umd",
-      name: pkg.name
+      name: "PDFFlipbook",
+      sourcemap: true,
+      globals: {
+        react: "React",
+        "react-dom": "ReactDOM",
+        "react/jsx-runtime": "jsxRuntime",
+      },
     },
   ],
+  external: ["react", "react-dom", "react/jsx-runtime"],
   plugins: [
     resolve({
-      // pass custom options to the resolve plugin
       moduleDirectories: ["node_modules"],
+      extensions: [".js", ".jsx", ".ts", ".tsx"],
     }),
-    typescript({ tsconfig: "./tsconfig.json" }),
+    commonjs(),
+    postcss({
+      extract: true,
+      minimize: true,
+    }),
+    typescript({ 
+      tsconfig: "./tsconfig.json",
+      declaration: true,
+      declarationDir: "./lib"
+    }),
     json(),
   ],
 };
