@@ -1,5 +1,41 @@
 # Changelog
 
+## [1.0.0] - 2026-01-30
+
+### Added
+- Initial release of PDF Flipbook component
+- PDFFlipbook React component with TypeScript support
+- Support for URL, File, and ArrayBuffer PDF sources
+- Responsive design with mobile-friendly single-page mode
+- Touch and keyboard navigation
+- Loading and error states with customizable components
+- Accessibility features (ARIA labels, keyboard navigation)
+- Page navigation controls with previous/next buttons
+- Page number indicator
+- Comprehensive test suite (28/32 tests passing)
+- Full TypeScript type definitions
+- CSS styling with responsive and accessibility support
+- Documentation and examples
+
+### Features
+- **Multiple Input Sources**: Load PDFs from URL strings, File objects, or ArrayBuffer
+- **Mobile Responsive**: Automatic single-page mode on mobile devices
+- **Keyboard Navigation**: Arrow keys, Home, End for page navigation
+- **Touch Support**: Swipe gestures for mobile devices
+- **Customizable**: Props for width, height, controls, page numbers
+- **Callbacks**: onLoad, onError, onPageChange event handlers
+- **Accessibility**: Full ARIA support, screen reader friendly
+- **Build Outputs**: CommonJS, ESM, and UMD bundles with source maps
+
+### Technical Details
+- Built with React 18+ and TypeScript
+- Uses pdfjs-dist for PDF rendering
+- Uses page-flip library for flipbook animations
+- Rollup for bundling with PostCSS for styles
+- Vitest for testing with React Testing Library
+- ESLint and Prettier for code quality
+
+
 ## [1.3.0](https://github.com/LeviEyal/typescript-library-template/compare/v1.2.0...v1.3.0) (2024-04-06)
 
 

@@ -8,6 +8,9 @@
     "outDir": ".",
     "target": "esnext",
     "resolveJsonModule": true,
+    "jsx": "react-jsx",
+    "lib": ["ES2015", "DOM"],
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*",
