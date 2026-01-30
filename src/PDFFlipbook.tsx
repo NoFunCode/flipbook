@@ -7,8 +7,12 @@ import { ErrorDisplay } from "./components/ErrorDisplay";
 import { Controls } from "./components/Controls";
 import "./styles.css";
 
-// Set up PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+// Set up PDF.js worker - use custom path if provided, otherwise use CDN
+const setWorkerSrc = (customSrc?: string): void => {
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    customSrc ??
+    `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+};
 
 export const PDFFlipbook: React.FC<PDFFlipbookProps> = ({
   source,
@@ -18,6 +22,7 @@ export const PDFFlipbook: React.FC<PDFFlipbookProps> = ({
   showControls = true,
   showPageNumber = true,
   singlePageMobile = true,
+  workerSrc,
   onPageChange,
   onLoad,
   onError,
@@ -28,6 +33,7 @@ export const PDFFlipbook: React.FC<PDFFlipbookProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const flipbookRef = useRef<PageFlip | null>(null);
+  const canvasElementsRef = useRef<HTMLCanvasElement[]>([]);
   const [state, setState] = useState<FlipbookState>({
     isLoading: true,
     error: null,
@@ -36,6 +42,11 @@ export const PDFFlipbook: React.FC<PDFFlipbookProps> = ({
     pdfDocument: null,
   });
   const [isMobile, setIsMobile] = useState(false);
+
+  // Initialize worker
+  useEffect(() => {
+    setWorkerSrc(workerSrc);
+  }, [workerSrc]);
 
   // Detect mobile devices
   useEffect(() => {
@@ -107,10 +118,25 @@ export const PDFFlipbook: React.FC<PDFFlipbookProps> = ({
       const container = containerRef.current;
       if (!container) return;
 
-      // Clear previous pages
+      // Clear previous pages properly
       const flipbookContainer = container.querySelector(".flipbook-pages");
       if (!flipbookContainer) return;
-      flipbookContainer.innerHTML = "";
+
+      // Remove all child nodes and cleanup canvas elements
+      while (flipbookContainer.firstChild) {
+        const child = flipbookContainer.firstChild;
+        if (child instanceof HTMLCanvasElement) {
+          // Clear canvas context to free memory
+          const ctx = child.getContext("2d");
+          if (ctx) {
+            ctx.clearRect(0, 0, child.width, child.height);
+          }
+        }
+        flipbookContainer.removeChild(child);
+      }
+
+      // Clear stored canvas references
+      canvasElementsRef.current = [];
 
       const pages: HTMLCanvasElement[] = [];
 
@@ -135,6 +161,9 @@ export const PDFFlipbook: React.FC<PDFFlipbookProps> = ({
         flipbookContainer.appendChild(canvas);
         pages.push(canvas);
       }
+
+      // Store canvas references for cleanup
+      canvasElementsRef.current = pages;
 
       // Initialize PageFlip
       if (flipbookContainer && pages.length > 0) {
@@ -163,8 +192,10 @@ export const PDFFlipbook: React.FC<PDFFlipbookProps> = ({
           disableFlipByClick: false,
         });
 
+        // Note: toDataURL() is required by page-flip library for image-based rendering
+        // This creates memory overhead for large PDFs but is necessary for the flip animation
         flipbookRef.current.loadFromImages(
-          pages.map((canvas) => canvas.toDataURL()),
+          pages.map((canvas) => canvas.toDataURL("image/jpeg", 0.85)),
         );
 
         flipbookRef.current.on("flip", (e: unknown) => {
@@ -178,10 +209,20 @@ export const PDFFlipbook: React.FC<PDFFlipbookProps> = ({
     renderPages();
 
     return () => {
+      // Cleanup flipbook instance
       if (flipbookRef.current) {
         flipbookRef.current.destroy();
         flipbookRef.current = null;
       }
+
+      // Cleanup canvas elements
+      canvasElementsRef.current.forEach((canvas) => {
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      });
+      canvasElementsRef.current = [];
     };
   }, [state.pdfDocument, startPage, isMobile, singlePageMobile, onPageChange]);
 

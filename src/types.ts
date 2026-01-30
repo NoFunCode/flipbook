@@ -41,6 +41,12 @@ export interface PDFFlipbookProps {
   singlePageMobile?: boolean;
 
   /**
+   * Custom path to PDF.js worker file
+   * If not provided, uses CDN version
+   */
+  workerSrc?: string;
+
+  /**
    * Callback when page changes
    */
   onPageChange?: (page: number) => void;

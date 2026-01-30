@@ -84,6 +84,7 @@ const arrayBuffer = await fetch('/document.pdf').then(r => r.arrayBuffer());
   showControls={true}
   showPageNumber={true}
   singlePageMobile={true}
+  workerSrc="/path/to/pdf.worker.min.js" // Optional: custom worker path
   onPageChange={(page) => console.log('Current page:', page)}
   onLoad={(totalPages) => console.log('Total pages:', totalPages)}
   onError={(error) => console.error('Error:', error)}
@@ -113,6 +114,7 @@ const arrayBuffer = await fetch('/document.pdf').then(r => r.arrayBuffer());
 | `showControls` | `boolean` | `true` | Show navigation controls |
 | `showPageNumber` | `boolean` | `true` | Show page number indicator |
 | `singlePageMobile` | `boolean` | `true` | Use single page mode on mobile |
+| `workerSrc` | `string` | CDN URL | Custom path to PDF.js worker file |
 | `onPageChange` | `(page: number) => void` | - | Callback when page changes |
 | `onLoad` | `(totalPages: number) => void` | - | Callback when PDF loads |
 | `onError` | `(error: Error) => void` | - | Callback when an error occurs |
