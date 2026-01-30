@@ -1,3 +1,5 @@
+import type { PDFDocumentProxy } from "pdfjs-dist";
+
 export interface PDFFlipbookProps {
   /**
    * PDF source - can be a URL string, File object, or ArrayBuffer
@@ -87,5 +89,5 @@ export interface FlipbookState {
   error: Error | null;
   totalPages: number;
   currentPage: number;
-  pdfDocument: unknown | null;
+  pdfDocument: PDFDocumentProxy | null;
 }

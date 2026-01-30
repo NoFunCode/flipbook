@@ -155,6 +155,7 @@ export const PDFFlipbook: React.FC<PDFFlipbookProps> = ({
           await page.render({
             canvasContext: context,
             viewport: viewport,
+            canvas: canvas,
           }).promise;
         }
 
