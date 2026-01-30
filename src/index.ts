@@ -1,1 +1,1 @@
-export * from './math'
+export { PDFFlipbook } from "./PDFFlipbook";
